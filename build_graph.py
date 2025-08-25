@@ -9,6 +9,7 @@ import subprocess
 from time import sleep
 import json
 from tqdm import tqdm
+import numpy as np
 
 # get the git username and github token
 result = subprocess.run(
@@ -88,16 +89,16 @@ def build_packages_dict():
         packages_dict[package] = contributors
 
         if i%500 == 0:
-            with open("package_dict.json", "w") as f:
+            with open("packages_dict.json", "w") as f:
                 json.dump(packages_dict, f, indent=4)
         sleep(1)
 
-    with open("package_dict.json", "w") as f:
+    with open("packages_dict.json", "w") as f:
         json.dump(packages_dict, f, indent=4)
 
-def build_contributors_dict(package_dict):
+def build_contributors_dict(packages_dict):
     contributors_dict = {}
-    for package, contributors in package_dict.items():
+    for package, contributors in packages_dict.items():
         for contributor in contributors:
             if contributor not in contributors_dict:
                 contributors_dict[contributor] = []
@@ -106,23 +107,36 @@ def build_contributors_dict(package_dict):
 
 
 def build_graph():
-    with open("package_dict.json", "r") as f:
-        package_dict = json.load(f)
+    with open("packages_dict.json", "r") as f:
+        packages_dict = json.load(f)
     G = nx.Graph()
-    contributors_dict = build_contributors_dict(package_dict)
+    contributors_dict = build_contributors_dict(packages_dict)
 
 
     for c1 in tqdm(contributors_dict):
         for c2 in contributors_dict:
             if c1!=c2:
                 common = set(contributors_dict[c1]) & set(contributors_dict[c2])
-                if len(common)>0:
+                if len(common)>1:
                     G.add_edge(c1, c2, weight=len(common))
+
+    print(len(G.nodes))
+    # remove = [node for node, degree in G.degree() if degree < 2]
+    # G.remove_nodes_from(remove)
+    remove = [node for node, degree in G.degree() if degree < 1]
+    G.remove_nodes_from(remove)
+    print(len(G.nodes))
+    pos = nx.spectral_layout(G, weight=None, scale=1000)
+
 
     for contributor in G.nodes():
         G.nodes[contributor]['label'] = contributor
         nodecolor = {"r": 0, "g": 0, "b": 0, "a": 1}
-        G.nodes[contributor]['viz'] = {"size":2+G.degree(contributor)*0.01, "position":{"x":random.random(), "y":random.random(), "z":0.0}, "color":nodecolor}
+        # x = random.random()
+        # y = random.random()
+        x = pos[contributor][0]
+        y = pos[contributor][1]
+        G.nodes[contributor]['viz'] = {"size":2+G.degree(contributor)*0.01, "position":{"x":x, "y":y, "z":0.0}, "color":nodecolor}
         G.nodes[contributor]['color'] = nodecolor
         G.nodes[contributor]['packages'] = ", ".join(sorted(contributors_dict[contributor]))
     G = filter_bots(G)
@@ -154,8 +168,8 @@ print(len(get_packages()))
 # build_packages_dict()
 G = build_graph()
 
-node, degree = max(G.degree, key=lambda x: x[1])
 
+node, degree = max(G.degree, key=lambda x: x[1])
 print(node, degree)
 
 nx.write_gexf(G, "graph.gexf")
