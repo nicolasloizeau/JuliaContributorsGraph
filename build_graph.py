@@ -126,7 +126,8 @@ def build_graph():
     remove = [node for node, degree in G.degree() if degree < 1]
     G.remove_nodes_from(remove)
     print(len(G.nodes))
-    pos = nx.spectral_layout(G, weight=None, scale=1000)
+    # pos = nx.spectral_layout(G, weight=None, scale=2000)
+    pos = nx.random_layout(G)
 
 
     for contributor in G.nodes():
