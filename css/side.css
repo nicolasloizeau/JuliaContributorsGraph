@@ -1,0 +1,62 @@
+.graph-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#sigma-container {
+    flex: 1;
+    height: 100%;
+}
+
+.info-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background: white;
+    border-left: 1px solid #ccc;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease;
+    width: 25%;
+    display: flex;
+}
+
+.info-panel.collapsed {
+    width: 30px;
+}
+
+.panel-toggle {
+    width: 30px;
+    height: 100%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-right: 1px solid #ddd;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.info-panel.collapsed .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.panel-content {
+    padding: 15px;
+    overflow-y: auto;
+    width: calc(100% - 30px);
+    display: block;
+}
+
+.info-panel.collapsed .panel-content {
+    display: none;
+}
+
+#paper-data {
+    font-family: Arial, Helvetica, sans-serif;
+}

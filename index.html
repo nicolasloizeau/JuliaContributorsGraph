@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Julia dependency graph</title>
+        <link rel="stylesheet" href="css/graph.css" />
+        <link rel="stylesheet" href="css/side.css" />
+        <link rel="stylesheet" href="css/legend.css" />
+    </head>
+    <body>
+        <div class="graph-container">
+            <div id="sigma-container"></div>
+
+            <div
+                style="
+                    position: fixed;
+                    bottom: 10px;
+                    left: 20px;
+                    z-index: 1000;
+                    font-family: sans-serif;
+                "
+            >
+                <a
+                    href="https://github.com/nicolasloizeau/JuliaDependencyGraph"
+                    target="_blank"
+                    style="
+                        display: inline-block;
+                        background-color: #757575;
+                        color: #fff;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        text-decoration: none;
+                        font-family: sans-serif;
+                    "
+                    >GitHub</a
+                >
+                <p>
+                    Two github users are connected if they contributed to at
+                    least a common package.
+                </p>
+            </div>
+
+            <div id="info-panel" class="info-panel expanded">
+                <div class="panel-toggle" id="panel-toggle">
+                    <span class="toggle-icon">❯</span>
+                </div>
+                <div class="panel-content">
+                    <div id="paper-data">Select a node to see details.</div>
+                </div>
+            </div>
+            <div id="controls">
+                <div class="title">
+                    <h1>Julia co-contributors graph</h1>
+                </div>
+
+                <div id="search">
+                    <input
+                        type="search"
+                        id="search-input"
+                        placeholder="search package..."
+                    />
+                </div>
+                <br />
+
+                <div class="input">
+                    <label for="labels-threshold">Labels threshold</label>
+                    <input
+                        id="labels-threshold"
+                        type="range"
+                        min="0"
+                        max="15"
+                        step="0.1"
+                    />
+                </div>
+                <br />
+                <button type="button" id="fa2" class="btn btn-light">
+                    Start Force Atlas ▶
+                </button>
+            </div>
+        </div>
+        <script>
+            const gexf_path = "graph.gexf";
+            const legend_path = "legend.json";
+        </script>
+        <script src="dist/bundle.js"></script>
+    </body>
+</html>
